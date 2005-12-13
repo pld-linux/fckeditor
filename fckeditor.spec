@@ -1,6 +1,7 @@
 # TODO
 # - connectors subpackages
 Summary:	The text editor for Internet
+Summary(pl):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.1.1
 Release:	0.1
@@ -19,6 +20,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 This HTML text editor brings to the web many of the powerful
 functionalities of desktop editors like MS Word. It's lightweight and
 doesn't require any kind of installation on the client computer.
+
+%description -l pl
+Ten edytor tekstu HTML udostêpnia stronom WWW wiele potê¿nych funkcji
+edytorów biurowych, takich jak MS Word. Jest lekki i nie wymaga ¿adnej
+inicjalizacji na komputerze klienckim.
 
 %prep
 %setup -q -n FCKeditor
