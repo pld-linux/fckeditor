@@ -1,7 +1,7 @@
 # TODO
 # - connectors subpackages
 Summary:	The text editor for Internet
-Summary(pl.UTF-8):   Edytor tekstowy dla Internetu
+Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.1.1
 Release:	0.1
