@@ -4,7 +4,7 @@ Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.6.2
-Release:	0.1
+Release:	0.2
 License:	LGPL v2.1
 Group:		Applications/WWW
 Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
@@ -36,7 +36,7 @@ rm -f fckeditor.{afp,asp,cfc,cfm,lasso}
 
 # undos the source
 sed -i -e 's,\r$,,' fckeditor.*
-find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
+find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' -o -name '*.html' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 
 %install
 rm -rf $RPM_BUILD_ROOT
