@@ -3,12 +3,12 @@
 Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
-Version:	2.6.2
-Release:	0.2
+Version:	2.6.3
+Release:	0.1
 License:	LGPL v2.1
 Group:		Applications/WWW
 Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
-# Source0-md5:	edc7270914e17fdfc5ad00e22eee1c38
+# Source0-md5:	eb926332283376614ade9610f20b27d4
 URL:		http://www.fckeditor.net/
 BuildRequires:	sed >= 4.0
 BuildArch:	noarch
