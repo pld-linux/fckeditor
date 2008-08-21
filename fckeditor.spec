@@ -1,10 +1,11 @@
 # TODO
-# - connectors subpackages
+# - connectors subpackages (for language deps)
+# - subpackage for _source (or don't package at all), used only when FCKConfig.Debug is set: LoadScript( '_source/internals/fckdebug.js' ) ;
 Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.6.3
-Release:	0.2
+Release:	0.7
 License:	LGPL v2.1
 Group:		Applications/WWW
 Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
@@ -33,13 +34,14 @@ inicjalizacji na komputerze klienckim.
 %setup -qc
 mv fckeditor/* .
 rmdir fckeditor
+mv _samples samples
 
 # don't know if there's any interpreter for those on linux, so kill
-rm -f fckeditor.{afp,asp,cfc,cfm,lasso}
+rm -f *.{afp,asp,cfc,cfm,lasso}
 
 # undos the source
-sed -i -e 's,\r$,,' fckeditor.*
-find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' -o -name '*.html' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
+sed -i -e 's,\r$,,' fckeditor*
+find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' -o -name '*.html' -o -name '*.php' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 
 # apache1/apache2 conf
 cat > apache.conf <<'EOF'
@@ -60,9 +62,12 @@ EOF
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
 cp -a fckconfig.* $RPM_BUILD_ROOT%{_appdir}
-cp -a fckeditor.* $RPM_BUILD_ROOT%{_appdir}
+cp -a fckeditor.* fckeditor_php4.php fckeditor_php5.php $RPM_BUILD_ROOT%{_appdir}
 cp -a editor $RPM_BUILD_ROOT%{_appdir}
 cp -a *.xml $RPM_BUILD_ROOT%{_appdir}
+
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -a samples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
@@ -89,3 +94,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc _*
 %{_appdir}
+
+%{_examplesdir}/%{name}-%{version}
