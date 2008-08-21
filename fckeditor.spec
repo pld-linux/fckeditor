@@ -4,12 +4,13 @@ Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.6.3
-Release:	0.14
+Release:	0.16
 License:	LGPL v2.1
 Group:		Applications/WWW
 Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
 # Source0-md5:	eb926332283376614ade9610f20b27d4
-Source1:	fckeditor-find-lang.sh
+Source1:	%{name}-find-lang.sh
+Patch0:		%{name}-config-php.patch
 URL:		http://www.fckeditor.net/
 BuildRequires:	rpmbuild(macros) > 1.268
 BuildRequires:	sed >= 4.0
@@ -24,31 +25,31 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_appdir		%{_datadir}/%{name}
 
 %package connector-php
-Summary:	File upload connector for PHP backend
+Summary:	File Manager Connector for PHP
 Group:		Applications/WWW
 Requires:	%{name} = %{version}-%{release}
 Requires:	php-common >= 4:5.0.0
 
 %description connector-php
-File upload connector for PHP backend.
+File Manager Connector for PHP.
 
 %package connector-perl
-Summary:	File upload connector for Perl backend
+Summary:	File Manager Connector for Perl
 Group:		Applications/WWW
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-base
 
 %description connector-perl
-File upload connector for Perl backend.
+File Manager Connector for Perl.
 
 %package connector-python
-Summary:	File upload connector for Python backend
+Summary:	File Manager Connector for Python
 Group:		Applications/WWW
 Requires:	%{name} = %{version}-%{release}
 Requires:	python
 
 %description connector-python
-File upload connector for Python backend.
+File Manager Connector for Python.
 
 %description
 This HTML text editor brings to the web many of the powerful
@@ -107,6 +108,8 @@ rm -f editor/filemanager/connectors/{test,uploadtest}.html
 sed -i -e 's,\r$,,' fckeditor*
 find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' -o -name '*.html' -o -name '*.php' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 
+%patch0 -p1
+
 # apache1/apache2 conf
 cat > apache.conf <<'EOF'
 Alias /%{name} %{_appdir}
@@ -141,6 +144,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}
 cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 cp -a lighttpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
+mv $RPM_BUILD_ROOT{%{_appdir}/editor/filemanager/connectors/php/config.php,%{_sysconfdir}/connector.php}
 
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
@@ -209,6 +213,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files connector-php
 %defattr(644,root,root,755)
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/connector.php
 %{_appdir}/editor/filemanager/connectors/php
 # language interface actually.
 %{_appdir}/fckeditor.php
