@@ -1,0 +1,11 @@
+--- fckeditor-2.6.3/editor/filemanager/connectors/php/config.php~	2008-08-21 18:08:21.839396372 +0300
++++ fckeditor-2.6.3/editor/filemanager/connectors/php/config.php	2008-08-21 18:11:08.000000000 +0300
+@@ -148,4 +148,7 @@
+ $Config['QuickUploadPath']['Media']		= $Config['UserFilesPath'] ;
+ $Config['QuickUploadAbsolutePath']['Media']= $Config['UserFilesAbsolutePath'] ;
+ 
+-?>
++# additional config via webserver setenv directives
++if (isset($_SERVER['FCKEDITOR_CONFIG'])) {
++	require $_SERVER['FCKEDITOR_CONFIG'];
++}
