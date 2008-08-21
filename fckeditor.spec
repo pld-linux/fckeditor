@@ -1,15 +1,15 @@
 # TODO
-# - connectors subpackages (for language deps)
-# - subpackage for _source (or don't package at all), used only when FCKConfig.Debug is set: LoadScript( '_source/internals/fckdebug.js' ) ;
+# - fckeditor.* provide language interfaces. package them where?
 Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.6.3
-Release:	0.7
+Release:	0.14
 License:	LGPL v2.1
 Group:		Applications/WWW
 Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
 # Source0-md5:	eb926332283376614ade9610f20b27d4
+Source1:	fckeditor-find-lang.sh
 URL:		http://www.fckeditor.net/
 BuildRequires:	rpmbuild(macros) > 1.268
 BuildRequires:	sed >= 4.0
@@ -18,7 +18,37 @@ Requires:	webserver(alias)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_appdir	%{_datadir}/%{name}
+%define		_webapps	/etc/webapps
+%define		_webapp		%{name}
+%define		_sysconfdir	%{_webapps}/%{_webapp}
+%define		_appdir		%{_datadir}/%{name}
+
+%package connector-php
+Summary:	File upload connector for PHP backend
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	php-common >= 4:5.0.0
+
+%description connector-php
+File upload connector for PHP backend.
+
+%package connector-perl
+Summary:	File upload connector for Perl backend
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	perl-base
+
+%description connector-perl
+File upload connector for Perl backend.
+
+%package connector-python
+Summary:	File upload connector for Python backend
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	python
+
+%description connector-python
+File upload connector for Python backend.
 
 %description
 This HTML text editor brings to the web many of the powerful
@@ -30,14 +60,48 @@ Ten edytor tekstu HTML udostępnia stronom WWW wiele potężnych funkcji
 edytorów biurowych, takich jak MS Word. Jest lekki i nie wymaga żadnej
 inicjalizacji na komputerze klienckim.
 
+# copied from /usr/lib/rpm/macros
+%package debuginfo
+Summary:	Debug information for package %{name}
+Summary(pl.UTF-8):	Informacje dla debuggera dla pakietu %{name}
+Group:		Development/Debug
+AutoReqProv:	0
+
+%description debuginfo
+This package provides debug information for package %{name}. Debug
+information is useful when developing applications that use this
+package or when debugging this package.
+
+%description debuginfo -l pl.UTF-8
+Ten pakiet dostarcza informacje dla debuggera dla pakietu %{name}.
+Informacje te są przydatne przy rozwijaniu aplikacji używających tego
+pakietu oraz przy odpluskwianiu samego pakietu.
+
 %prep
 %setup -qc
 mv fckeditor/* .
 rmdir fckeditor
 mv _samples samples
+mkdir samples/plugins
+mv editor/plugins/bbcode/_sample samples/plugins/bbcode
+rm -f editor/lang/_translationstatus.txt
+
+install %{SOURCE1} find-lang.sh
+
+# fck php4
+mv fckeditor_php5.php fckeditor.php
+rm fckeditor_php4.php
+
+%if %{_enable_debug_packages}
+%else
+# source used only when FCKConfig.Debug is set: LoadScript( '_source/internals/fckdebug.js' ) ;
+rm -r editor/_source
+%endif
 
 # don't know if there's any interpreter for those on linux, so kill
 rm -f *.{afp,asp,cfc,cfm,lasso}
+rm -rf editor/filemanager/connectors/{asp,aspx,cfm,lasso}
+rm -f editor/filemanager/connectors/{test,uploadtest}.html
 
 # undos the source
 sed -i -e 's,\r$,,' fckeditor*
@@ -61,13 +125,22 @@ EOF
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
-cp -a fckconfig.* $RPM_BUILD_ROOT%{_appdir}
-cp -a fckeditor.* fckeditor_php4.php fckeditor_php5.php $RPM_BUILD_ROOT%{_appdir}
 cp -a editor $RPM_BUILD_ROOT%{_appdir}
+cp -a fckconfig.* $RPM_BUILD_ROOT%{_appdir}
 cp -a *.xml $RPM_BUILD_ROOT%{_appdir}
+
+# these are sample language interfaces. move to examples?
+cp -a fckeditor.{js,php,pl,py} $RPM_BUILD_ROOT%{_appdir}
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a samples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
+./find-lang.sh %{name}.lang
+
+install -d $RPM_BUILD_ROOT%{_sysconfdir}
+cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+cp -a lighttpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
 
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
@@ -90,9 +163,70 @@ cp -a samples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc _*
-%{_appdir}
+%dir %attr(750,root,http) %{_sysconfdir}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/lighttpd.conf
+%dir %{_appdir}
+%dir %{_appdir}/editor
+%{_appdir}/editor/css
+%{_appdir}/editor/dialog
+%{_appdir}/editor/skins
+%{_appdir}/editor/js
+%{_appdir}/editor/dtd
+%{_appdir}/editor/images
+
+%dir %{_appdir}/editor/plugins
+%{_appdir}/editor/plugins/autogrow
+%{_appdir}/editor/plugins/bbcode
+%{_appdir}/editor/plugins/dragresizetable
+%{_appdir}/editor/plugins/simplecommands
+%{_appdir}/editor/plugins/tablecommands
+%dir %{_appdir}/editor/plugins/placeholder
+%{_appdir}/editor/plugins/placeholder/fck_placeholder.html
+%{_appdir}/editor/plugins/placeholder/fckplugin.js
+%{_appdir}/editor/plugins/placeholder/placeholder.gif
+
+%dir %{_appdir}/editor/filemanager
+%{_appdir}/editor/filemanager/browser
+%dir %{_appdir}/editor/filemanager/connectors
+
+%{_appdir}/editor/fckdebug.html
+%{_appdir}/editor/fckdialog.html
+%{_appdir}/editor/fckeditor.html
+%{_appdir}/editor/fckeditor.original.html
+%{_appdir}/fckconfig.js
+%{_appdir}/fckeditor.js
+
+%{_appdir}/fckpackager.xml
+%{_appdir}/fckstyles.xml
+%{_appdir}/fcktemplates.xml
 
 %{_examplesdir}/%{name}-%{version}
+
+%files connector-php
+%defattr(644,root,root,755)
+%{_appdir}/editor/filemanager/connectors/php
+# language interface actually.
+%{_appdir}/fckeditor.php
+
+%files connector-perl
+%defattr(644,root,root,755)
+%{_appdir}/editor/filemanager/connectors/perl
+# language interface actually.
+%{_appdir}/fckeditor.pl
+
+%files connector-python
+%defattr(644,root,root,755)
+%{_appdir}/editor/filemanager/connectors/py
+# language interface actually.
+%{_appdir}/fckeditor.py
+
+%if %{_enable_debug_packages}
+%files debuginfo
+%defattr(644,root,root,755)
+%{_appdir}/editor/_source
+%endif
