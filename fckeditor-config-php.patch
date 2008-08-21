@@ -9,3 +9,25 @@
 +if (isset($_SERVER['FCKEDITOR_CONFIG'])) {
 +	require $_SERVER['FCKEDITOR_CONFIG'];
 +}
+--- fckeditor-2.6.3/editor/filemanager/connectors/php/connector.php~	2008-08-21 18:12:56.539368285 +0300
++++ fckeditor-2.6.3/editor/filemanager/connectors/php/connector.php	2008-08-21 18:19:02.686831589 +0300
+@@ -24,7 +24,7 @@
+ 
+ ob_start() ;
+ 
+-require('./config.php') ;
++require('/etc/webapps/fckeditor/connector.php') ;
+ require('./util.php') ;
+ require('./io.php') ;
+ require('./basexml.php') ;
+--- fckeditor-2.6.3/editor/filemanager/connectors/php/upload.php~	2008-08-21 18:12:56.542701906 +0300
++++ fckeditor-2.6.3/editor/filemanager/connectors/php/upload.php	2008-08-21 18:19:29.316829409 +0300
+@@ -22,7 +22,7 @@
+  * This is the "File Uploader" for PHP.
+  */
+ 
+-require('./config.php') ;
++require('/etc/webapps/fckeditor/connector.php') ;
+ require('./util.php') ;
+ require('./io.php') ;
+ require('./commands.php') ;
