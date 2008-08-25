@@ -24,33 +24,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	%{_webapps}/%{_webapp}
 %define		_appdir		%{_datadir}/%{name}
 
-%package connector-php
-Summary:	File Manager Connector for PHP
-Group:		Applications/WWW
-Requires:	%{name} = %{version}-%{release}
-Requires:	php-common >= 4:5.0.0
-
-%description connector-php
-File Manager Connector for PHP.
-
-%package connector-perl
-Summary:	File Manager Connector for Perl
-Group:		Applications/WWW
-Requires:	%{name} = %{version}-%{release}
-Requires:	perl-base
-
-%description connector-perl
-File Manager Connector for Perl.
-
-%package connector-python
-Summary:	File Manager Connector for Python
-Group:		Applications/WWW
-Requires:	%{name} = %{version}-%{release}
-Requires:	python
-
-%description connector-python
-File Manager Connector for Python.
-
 %description
 This HTML text editor brings to the web many of the powerful
 functionalities of desktop editors like MS Word. It's lightweight and
@@ -60,6 +33,45 @@ doesn't require any kind of installation on the client computer.
 Ten edytor tekstu HTML udostępnia stronom WWW wiele potężnych funkcji
 edytorów biurowych, takich jak MS Word. Jest lekki i nie wymaga żadnej
 inicjalizacji na komputerze klienckim.
+
+%package connector-php
+Summary:	File Manager Connector for PHP
+Summary(pl.UTF-8):	Interfejs zarządcy plików do PHP
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	php-common >= 4:5.0.0
+
+%description connector-php
+File Manager Connector for PHP.
+
+%description connector-php -l pl.UTF-8
+Interfejs zarządcy plików do PHP.
+
+%package connector-perl
+Summary:	File Manager Connector for Perl
+Summary(pl.UTF-8):	Interfejs zarządcy plików do Perla
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	perl-base
+
+%description connector-perl
+File Manager Connector for Perl.
+
+%description connector-perl -l pl.UTF-8
+Interfejs zarządcy plików do Perla.
+
+%package connector-python
+Summary:	File Manager Connector for Python
+Summary(pl.UTF-8):	Interfejs zarządcy plików do Pythona
+Group:		Applications/WWW
+Requires:	%{name} = %{version}-%{release}
+Requires:	python
+
+%description connector-python
+File Manager Connector for Python.
+
+%description connector-python -l pl.UTF-8
+Interfejs zarządcy plików do Pythona.
 
 # copied from /usr/lib/rpm/macros
 %package debuginfo
