@@ -12,7 +12,7 @@ Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
 Source1:	%{name}-find-lang.sh
 Patch0:		%{name}-config-php.patch
 URL:		http://www.fckeditor.net/
-BuildRequires:	rpmbuild(macros) > 1.268
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires:	webserver(access)
 Requires:	webserver(alias)
