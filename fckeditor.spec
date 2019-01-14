@@ -4,14 +4,14 @@ Summary:	The text editor for Internet
 Summary(pl.UTF-8):	Edytor tekstowy dla Internetu
 Name:		fckeditor
 Version:	2.6.3
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Applications/WWW
-Source0:	http://dl.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
+Source0:	https://downloads.sourceforge.net/fckeditor/FCKeditor_%{version}.tar.gz
 # Source0-md5:	eb926332283376614ade9610f20b27d4
 Source1:	%{name}-find-lang.sh
 Patch0:		%{name}-config-php.patch
-URL:		http://www.fckeditor.net/
+URL:		https://ckeditor.com/
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires:	webserver(access)
@@ -39,7 +39,7 @@ Summary:	File Manager Connector for PHP
 Summary(pl.UTF-8):	Interfejs zarządcy plików do PHP
 Group:		Applications/WWW
 Requires:	%{name} = %{version}-%{release}
-Requires:	php-common >= 4:5.0.0
+Requires:	php(core) >= 5.0.0
 
 %description connector-php
 File Manager Connector for PHP.
@@ -133,7 +133,7 @@ EOF
 # lighttpd conf
 cat > lighttpd.conf <<'EOF'
 alias.url += (
-    "/%{name}" => "%{_appdir}",
+	"/%{name}" => "%{_appdir}",
 )
 EOF
 
