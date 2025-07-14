@@ -120,7 +120,7 @@ rm -f editor/filemanager/connectors/{test,uploadtest}.html
 sed -i -e 's,\r$,,' fckeditor*
 find '(' -name '*.js' -o -name '*.css' -o -name '*.txt' -o -name '*.html' -o -name '*.php' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 
-%patch0 -p1
+%patch -P0 -p1
 
 # apache1/apache2 conf
 cat > apache.conf <<'EOF'
